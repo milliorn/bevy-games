@@ -8,3 +8,4 @@ edition = "2021"
 
 [dependencies]
 bevy = "0.13" # or latest version
+bevy_math = "0.16.0"
