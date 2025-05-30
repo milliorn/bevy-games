@@ -1,5 +1,4 @@
-use bevy::prelude::*;
-use bevy_math::primitives::Rectangle;
+use bevy::{math::primitives::Rectangle, prelude::*};
 
 fn main() {
     App::new()
@@ -28,6 +27,15 @@ fn setup(
             ..default()
         }),
         transform: Transform::from_translation(Vec3::new(4., 0., 4.)),
-        ..Default::default()
+        ..default()
+    });
+
+    commands.spawn(Camera3dBundle {
+        transform: Transform {
+            translation: Vec3::new(-7.0, 20.0, 4.0),
+            rotation: Quat::from_euler(EulerRot::XYZ, -0.3, -0.5, -0.3),
+            ..default()
+        },
+        ..default()
     });
 }
