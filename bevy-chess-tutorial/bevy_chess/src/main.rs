@@ -25,6 +25,7 @@ fn setup(
 ) {
     let plane_builder: bevy::render::mesh::PlaneMeshBuilder =
         Plane3d::default().mesh().size(8.0, 8.0);
+
     let plane_mesh: Mesh = Mesh::from(plane_builder);
 
     // 1) Ground plane as an 8×8 quad
@@ -58,4 +59,12 @@ fn setup(
         transform: Transform::from_translation(Vec3::new(4.0, 8.0, 4.0)),
         ..default()
     });
+}
+
+fn create_board(
+    commands: &mut Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    
 }

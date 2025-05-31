@@ -8,5 +8,4 @@ edition = "2021"
 
 [dependencies]
 bevy = "0.14"
-bevy_math = "0.16.0"
-bevy_mod_picking = "0.20.1"  # ← pick the latest 0.20.x
+bevy_mod_picking = "0.20.1"
