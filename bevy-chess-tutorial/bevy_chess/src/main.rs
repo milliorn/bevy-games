@@ -7,7 +7,7 @@ fn main() {
         .insert_resource(ClearColor(Color::srgb(0.9, 0.9, 0.9)))
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
-                title: "Chess!".into(),
+                title: "Rusty Chess!".into(),
                 resolution: (1400.0, 1400.0).into(),
                 ..default()
             }),
@@ -15,6 +15,7 @@ fn main() {
         }))
         .add_plugins(DefaultPickingPlugins)
         .add_systems(Startup, setup)
+        .add_systems(Startup, create_board)
         .run();
 }
 
@@ -62,9 +63,47 @@ fn setup(
 }
 
 fn create_board(
-    commands: &mut Commands,
+    mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    
+    // Build a 1×1 Plane mesh
+    let square_mesh: Handle<Mesh> = {
+        let builder = Plane3d::default().mesh().size(1.0, 1.0);
+        meshes.add(Mesh::from(builder))
+    };
+
+    // Two materials for light/dark squares
+    let light_material = materials.add(StandardMaterial {
+        base_color: Color::srgb(1.0, 0.9, 0.9),
+        ..default()
+    });
+    let dark_material = materials.add(StandardMaterial {
+        base_color: Color::srgb(0.0, 0.1, 0.1),
+        ..default()
+    });
+
+    // Spawn an 8×8 grid of squares, each lifted by y=0.01 and shifted by +0.5 in X/Z
+    for i in 0..8 {
+        for j in 0..8 {
+            let use_light = (i + j + 1) % 2 == 0;
+            commands.spawn(PbrBundle {
+                mesh: square_mesh.clone(),
+
+                material: if use_light {
+                    light_material.clone()
+                } else {
+                    dark_material.clone()
+                },
+
+                transform: Transform::from_translation(Vec3::new(
+                    i as f32 + 0.5,
+                    0.01,
+                    j as f32 + 0.5,
+                )),
+
+                ..default()
+            });
+        }
+    }
 }
