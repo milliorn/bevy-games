@@ -134,7 +134,7 @@ fn create_pieces(
     // Spawn a “parent” entity using SpatialBundle
     commands
         .spawn(SpatialBundle {
-            transform: Transform::from_translation(Vec3::new(0.0, 0.0, 4.0)),
+            transform: Transform::from_translation(Vec3::new(0.5, 0.0, 4.5)),
             ..default()
         })
         .with_children(|parent| {
