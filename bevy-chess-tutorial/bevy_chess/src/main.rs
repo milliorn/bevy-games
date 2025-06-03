@@ -16,6 +16,7 @@ fn main() {
         .add_plugins(DefaultPickingPlugins)
         .add_systems(Startup, setup)
         .add_systems(Startup, create_board)
+        .add_systems(Startup, create_pieces)
         .run();
 }
 
@@ -106,4 +107,57 @@ fn create_board(
             });
         }
     }
+}
+
+fn create_pieces(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    // Load all the meshes:
+    let king_handle: Handle<Mesh> =
+        asset_server.load("models/pieces.glb#Mesh0/Primitive0");
+    let king_cross_handle: Handle<Mesh> =
+        asset_server.load("models/pieces.glb#Mesh1/Primitive0");
+
+    // Add two materials (light and dark):
+    let light_material: Handle<StandardMaterial> = materials.add(StandardMaterial {
+        base_color: Color::srgb(1.0, 0.8, 0.8),
+        ..default()
+    });
+
+    // let dark_material: Handle<StandardMaterial> = materials.add(StandardMaterial {
+    //     base_color: Color::srgb(0.0, 0.2, 0.2),
+    //     ..default()
+    // });
+
+    // Spawn a “parent” entity using SpatialBundle
+    commands
+        .spawn(SpatialBundle {
+            transform: Transform::from_translation(Vec3::new(0.0, 0.0, 4.0)),
+            ..default()
+        })
+        .with_children(|parent| {
+            parent.spawn(PbrBundle {
+                mesh: king_handle.clone(),
+                material: light_material.clone(),
+                transform: Transform {
+                    translation: Vec3::new(-0.2, 0.0, -1.9),
+                    scale: Vec3::splat(0.2),
+                    ..default()
+                },
+                ..default()
+            });
+
+            parent.spawn(PbrBundle {
+                mesh: king_cross_handle.clone(),
+                material: light_material.clone(),
+                transform: Transform {
+                    translation: Vec3::new(-0.2, 0.0, -1.9),
+                    scale: Vec3::splat(0.2),
+                    ..default()
+                },
+                ..default()
+            });
+        });
 }
