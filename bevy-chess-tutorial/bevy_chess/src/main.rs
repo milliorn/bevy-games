@@ -4,11 +4,11 @@ use bevy_mod_picking::prelude::*;
 fn main() {
     App::new()
         .insert_resource(Msaa::Sample4)
-        .insert_resource(ClearColor(Color::srgb(0.9, 0.9, 0.9)))
+        .insert_resource(ClearColor(Color::srgb(0.1, 0.1, 0.1)))
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "Rusty Chess!".into(),
-                resolution: (1400.0, 1400.0).into(),
+                resolution: (800.0, 800.0).into(),
                 ..default()
             }),
             ..default()
