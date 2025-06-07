@@ -8,7 +8,7 @@ fn main() {
     App::new() //create a new bevy app
         .add_plugins((DefaultPlugins, MeshPickingPlugin)) //click on meshes
         .add_observer(disable_entities_on_click) // runs only when click event is detected
-        .add_systems(Update, list_all_named_entities,)
+        .add_systems(Update, list_all_named_entities)
         .run(); // begin game loop
 }
 
@@ -40,10 +40,36 @@ fn disable_entities_on_click(
     }
 }
 
+// define a new system function
+// system runs every frame or specific schedule
+// will build a list of active entity names
 fn list_all_named_entities(
-    query: Query<&Name>,
-    mut name_text_query: Query<&mut Text, With<EntityNameText>>,
-    mut commands: Commands,
+    query: Query<&Name>, // query to get all entities that have a Name component. by default this will  not include disabled entities
+    mut name_text_query: Query<&mut Text, With<EntityNameText>>, // looks for Text Component
+    mut commands: Commands, // spawn, modify, despawn entities
 ) {
+    // we will use this to append all entity names to this string
+    let mut text_string = String::from("Named entities found:\n");
 
+    // iterate all names returned by query and sort because if we dont the order might change on every frame (no certain stable order)
+    for name in query.iter().sort::<&Name>() {
+        // add name to text_string
+        text_string.push_str(&format!("{:?}\n", name));
+    }
+
+    // Try to get the one Text entity tagged with EntityNameText.
+    if let Ok(mut text) = name_text_query.single_mut() {
+        // overwrite Text with the new text_string
+        *text = Text::new(text_string);
+    } else {
+        commands.spawn((
+            EntityNameText,
+            Text::default(),
+            Node {
+                position_type: PositionType::Absolute,
+                top: Val::Px(12.0),
+                ..default()
+            },
+        ));
+    }
 }
