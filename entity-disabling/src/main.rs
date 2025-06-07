@@ -8,8 +8,15 @@ fn main() {
     App::new() //create a new bevy app
         .add_plugins((DefaultPlugins, MeshPickingPlugin)) //click on meshes
         .add_observer(disable_entities_on_click) // runs only when click event is detected
+        .add_systems(Update, list_all_named_entities,)
         .run(); // begin game loop
 }
+
+// marker component
+// it will tag the ui text entity we spawn later
+// helps us find and update that text
+#[derive(Component)]
+struct EntityNameText;
 
 // Define a new component, DisabledOnClick
 // This is a marker component, it doesn't hold data. Mark entities we want to enable/disable
@@ -28,7 +35,15 @@ fn disable_entities_on_click(
 
     // check if entity has component
     if valid_query.contains(clicked_entity) {
-        // 
+        //
         commands.entity(clicked_entity).insert(Disabled);
     }
+}
+
+fn list_all_named_entities(
+    query: Query<&Name>,
+    mut name_text_query: Query<&mut Text, With<EntityNameText>>,
+    mut commands: Commands,
+) {
+
 }
