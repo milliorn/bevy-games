@@ -8,7 +8,10 @@ fn main() {
     App::new() //create a new bevy app
         .add_plugins((DefaultPlugins, MeshPickingPlugin)) //click on meshes
         .add_observer(disable_entities_on_click) // runs only when click event is detected
-        .add_systems(Update, (list_all_named_entities, reenable_entities_on_space))
+        .add_systems(
+            Update,
+            (list_all_named_entities, reenable_entities_on_space),
+        )
         .run(); // begin game loop
 }
 
@@ -84,5 +87,49 @@ fn reenable_entities_on_space(
         for entity in disabled_entities.iter() {
             commands.entity(entity).remove::<Disabled>();
         }
+    }
+}
+
+fn setup_scene(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>, // get write access to mesh assets
+    mut materials: ResMut<Assets<ColorMaterial>>, // get write access to color materials
+) {
+    // define distance apart the shapes will spread horizontally (width)
+    const X_EXTENT: f32 = 900.;
+
+    // spawn a camera so we can see
+    commands.spawn(Camera2d);
+
+    // create three different shapes
+    let named_shapes = [
+        (Name::new("Annulus"), meshes.add(Annulus::new(25.0, 50.0))),
+        (
+            Name::new("Bestagon"),
+            meshes.add(RegularPolygon::new(50.0, 6)),
+        ),
+        (Name::new("Rhombus"), meshes.add(Rhombus::new(75.0, 100.0))),
+    ];
+
+    let num_shapes = named_shapes.len();
+
+    //
+    for (i, (name, shape)) in named_shapes.into_iter().enumerate() {
+        // create unique color for each shape
+        let color = Color::hsl(360. * i as f32 / num_shapes as f32, 0.95, 0.7);
+
+        // spawn a new entity for each shape
+        commands.spawn((
+            name,                                 // add Name component
+            DisableOnClick,                       // add component
+            Mesh2d(shape),                        // add mesh
+            MeshMaterial2d(materials.add(color)), // add mesh to be rendered
+            Transform::from_xyz(
+                // set position
+                -X_EXTENT / 2. + i as f32 / (num_shapes - 1) as f32 * X_EXTENT, // X position
+                0.0,                                                            // Y position
+                0.0,                                                            // Z position
+            ),
+        ));
     }
 }
