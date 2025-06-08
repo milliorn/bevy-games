@@ -38,8 +38,13 @@ fn disable_entities_on_click(
     let clicked_entity = trigger.target();
 
     // check if entity has component
+    // Windows and text are entities and can be clicked!
+    // We definitely don't want to disable the window itself,
+    // because that would cause the app to close!
     if valid_query.contains(clicked_entity) {
-        //
+        // Just add the `Disabled` component to the entity to disable it.
+        // Note that the `Disabled` component is *only* added to the entity,
+        // its children are not affected.
         commands.entity(clicked_entity).insert(Disabled);
     }
 }
@@ -47,6 +52,8 @@ fn disable_entities_on_click(
 // define a new system function
 // system runs every frame or specific schedule
 // will build a list of active entity names
+// The query here will not find entities with the `Disabled` component,
+// because it does not explicitly include it.
 fn list_all_named_entities(
     query: Query<&Name>, // query to get all entities that have a Name component. by default this will  not include disabled entities
     mut name_text_query: Query<&mut Text, With<EntityNameText>>, // looks for Text Component
@@ -55,6 +62,8 @@ fn list_all_named_entities(
     // we will use this to append all entity names to this string
     let mut text_string = String::from("Named entities found:\n");
 
+    // Query iteration order is not guaranteed, so we sort the names
+    // to ensure the output is consistent.
     // iterate all names returned by query and sort because if we dont the order might change on every frame (no certain stable order)
     for name in query.iter().sort::<&Name>() {
         // add name to text_string
@@ -81,11 +90,14 @@ fn list_all_named_entities(
 // if key is pressed it loops over all disabled entities and removed Disabled, re-enabling them
 fn reenable_entities_on_space(
     mut commands: Commands,
+    // This query can find disabled entities,
+    // because it explicitly includes the `Disabled` component.
     disabled_entities: Query<Entity, With<Disabled>>, // finds all entities that have the Disabled component
     input: Res<ButtonInput<KeyCode>>,                 // let us check if key was pressed
 ) {
     if input.just_pressed(KeyCode::Space) {
         for entity in disabled_entities.iter() {
+            // To re-enable an entity, just remove the `Disabled` component.
             commands.entity(entity).remove::<Disabled>();
         }
     }
@@ -117,6 +129,7 @@ fn setup_scene(
     //
     for (i, (name, shape)) in named_shapes.into_iter().enumerate() {
         // create unique color for each shape
+        // Distribute colors evenly across the rainbow.
         let color = Color::hsl(360. * i as f32 / num_shapes as f32, 0.95, 0.7);
 
         // spawn a new entity for each shape
