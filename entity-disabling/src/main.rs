@@ -12,6 +12,7 @@ fn main() {
             Update,
             (list_all_named_entities, reenable_entities_on_space),
         )
+        .add_systems(Startup, setup_scene)
         .run(); // begin game loop
 }
 
