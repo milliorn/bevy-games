@@ -8,7 +8,7 @@ fn main() {
     App::new() //create a new bevy app
         .add_plugins((DefaultPlugins, MeshPickingPlugin)) //click on meshes
         .add_observer(disable_entities_on_click) // runs only when click event is detected
-        .add_systems(Update, list_all_named_entities)
+        .add_systems(Update, (list_all_named_entities, reenable_entities_on_space))
         .run(); // begin game loop
 }
 
@@ -71,5 +71,18 @@ fn list_all_named_entities(
                 ..default()
             },
         ));
+    }
+}
+
+// if key is pressed it loops over all disabled entities and removed Disabled, re-enabling them
+fn reenable_entities_on_space(
+    mut commands: Commands,
+    disabled_entities: Query<Entity, With<Disabled>>, // finds all entities that have the Disabled component
+    input: Res<ButtonInput<KeyCode>>,                 // let us check if key was pressed
+) {
+    if input.just_pressed(KeyCode::Space) {
+        for entity in disabled_entities.iter() {
+            commands.entity(entity).remove::<Disabled>();
+        }
     }
 }
