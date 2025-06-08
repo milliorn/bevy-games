@@ -12,7 +12,7 @@ fn main() {
             Update,
             (list_all_named_entities, reenable_entities_on_space),
         )
-        .add_systems(Startup, setup_scene)
+        .add_systems(Startup, (setup_scene, display_instructions))
         .run(); // begin game loop
 }
 
@@ -133,4 +133,21 @@ fn setup_scene(
             ),
         ));
     }
+}
+
+// define system function
+fn display_instructions(mut commands: Commands) {
+    commands.spawn((
+        // create Text component
+        Text::new(
+            "Click an entity to disable it.\n\nPress Space to re-enable all disabled entities.",
+        ),
+        // create Node component to control layout and positioning on screen
+        Node {
+            position_type: PositionType::Absolute,
+            top: Val::Px(12.0),
+            left: Val::Px(12.0),
+            ..default()
+        },
+    ));
 }
