@@ -25,5 +25,6 @@ fn setup(mut commands: Commands) {
             // Child entities
             parent.spawn(Name::new("Helmet"));
             parent.spawn(Name::new("Shirt"));
+            parent.spawn(Name::new("Socks"));
         });
 }
