@@ -3,6 +3,10 @@ use bevy::log::LogPlugin;
 // The `prelude` includes most of the commonly used Bevy types, like `App`, systems, components, and plugins
 use bevy::prelude::*;
 
+// Custom component representing the strength of an armor piece.
+#[derive(Component)]
+struct Armor(u16);
+
 fn main() {
     App::new()
         // Add core Bevy systems without rendering or input (keeps it lightweight)
@@ -17,14 +21,14 @@ fn main() {
 }
 
 // The setup system runs once when the app starts.
-// We spawn a Goblin with a Name and attach a Helmet as its child.
+// We spawn a Goblin with a Name and attach a Helmet, Shirt, Socks as its child/ren.
 fn setup(mut commands: Commands) {
     commands
         .spawn(Name::new("Goblin")) // Parent entity
         .with_children(|parent| {
             // Child entities
-            parent.spawn(Name::new("Helmet"));
-            parent.spawn(Name::new("Shirt"));
-            parent.spawn(Name::new("Socks"));
+            parent.spawn((Name::new("Helmet"), Armor(5)));
+            parent.spawn((Name::new("Shirt"), Armor(15)));
+            parent.spawn((Name::new("Socks"), Armor(10)));
         });
 }
