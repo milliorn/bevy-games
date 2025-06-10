@@ -7,6 +7,14 @@ use bevy::prelude::*;
 #[derive(Component)]
 struct Armor(u16);
 
+// this event represents an attack that deals damage to an entity
+// It is configured to propagate from child to parent (e.g., from armor to Goblin).
+#[derive(Clone, Component, Event)]
+#[event(traversal = &'static ChildOf, auto_propagate)]
+struct Attack {
+    damage: u16,
+}
+
 fn main() {
     App::new()
         // Add core Bevy systems without rendering or input (keeps it lightweight)
