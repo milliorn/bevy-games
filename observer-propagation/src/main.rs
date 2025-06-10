@@ -23,6 +23,7 @@ fn main() {
             // Enables logging so we can debug and trace behavior in the terminal
             LogPlugin::default(),
         ))
+        .add_event::<Attack>()
         // Register a setup system to run once at the beginning of the app
         .add_systems(Startup, setup)
         .run();
