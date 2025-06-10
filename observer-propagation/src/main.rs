@@ -15,6 +15,11 @@ struct Attack {
     damage: u16,
 }
 
+// custom component representing health
+// we use Deref to access the inner value
+#[derive(Component, Deref, DerefMut)]
+struct HitPoints(u16);
+
 fn main() {
     App::new()
         // Add core Bevy systems without rendering or input (keeps it lightweight)
@@ -35,11 +40,18 @@ fn main() {
 fn setup(mut commands: Commands) {
     commands
         .spawn(Name::new("Goblin")) // Parent entity
+        .observe(take_damage)
         .with_children(|parent| {
             // Child entities
-            parent.spawn((Name::new("Helmet"), Armor(5)));
-            parent.spawn((Name::new("Shirt"), Armor(15)));
-            parent.spawn((Name::new("Socks"), Armor(10)));
+            parent
+                .spawn((Name::new("Helmet"), Armor(5)))
+                .observe(block_attack);
+            parent
+                .spawn((Name::new("Shirt"), Armor(15)))
+                .observe(block_attack);
+            parent
+                .spawn((Name::new("Socks"), Armor(10)))
+                .observe(block_attack);
         });
 }
 
@@ -61,4 +73,27 @@ fn block_attack(mut trigger: Trigger<Attack>, armor: Query<(&Armor, &Name)>) {
         trigger.propagate(false);
         info!("(propagation halted early)\n");
     }
+}
+
+// take damage if armor fails to block it
+fn take_damage(
+    trigger: Trigger<Attack>,
+    mut hp: Query<(&mut HitPoints, &Name)>,
+    mut commands: Commands,
+    mut app_exit: EventWriter<AppExit>,
+) {
+    let attack = trigger.event();
+    let (mut hp, name) = hp.get_mut(trigger.target()).unwrap();
+
+    **hp = hp.saturating_sub(attack.damage);
+
+    if **hp > 0 {
+        info!("{} has {:.1} HP", name, hp.0);
+    } else {
+        warn!("💀 {} has died a gruesome death", name);
+        commands.entity(trigger.target()).despawn();
+        app_exit.write(AppExit::Success);
+    }
+
+    info!("(propagation reached root)\n");
 }
