@@ -23,6 +23,7 @@ fn main() {
             // Enables logging so we can debug and trace behavior in the terminal
             LogPlugin::default(),
         ))
+        // register the attack event
         .add_event::<Attack>()
         // Register a setup system to run once at the beginning of the app
         .add_systems(Startup, setup)
@@ -40,4 +41,24 @@ fn setup(mut commands: Commands) {
             parent.spawn((Name::new("Shirt"), Armor(15)));
             parent.spawn((Name::new("Socks"), Armor(10)));
         });
+}
+
+// This observer system is called on each entity with Armor when an Attack reaches it.
+// It checks if the armor blocks the damage. If it does, the event stops.
+fn block_attack(mut trigger: Trigger<Attack>, armor: Query<(&Armor, &Name)>) {
+    let (armor, name) = armor.get(trigger.target()).unwrap();
+    let attack = trigger.event_mut();
+
+    // calculate leftover damage after armor blocks damage
+    let damage = attack.damage.saturating_sub(armor.0);
+
+    if damage > 0 {
+        info!("🩸 {} damage passed through {}", damage, name);
+        // update damage
+        attack.damage = damage;
+    } else {
+        info!("🛡️  {} damage blocked by {}", attack.damage, name);
+        trigger.propagate(false);
+        info!("(propagation halted early)\n");
+    }
 }
