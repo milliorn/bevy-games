@@ -1,7 +1,12 @@
+use std::time::Duration;
+
 // The `LogPlugin` allows us to print messages to the console (e.g., with `info!`, `warn!`, `error!`)
 use bevy::log::LogPlugin;
 // The `prelude` includes most of the commonly used Bevy types, like `App`, systems, components, and plugins
 use bevy::prelude::*;
+use bevy::time::common_conditions::on_timer;
+use rand::seq::IteratorRandom;
+use rand::{Rng, rng};
 
 // Custom component representing the strength of an armor piece.
 #[derive(Component)]
@@ -32,6 +37,11 @@ fn main() {
         .add_event::<Attack>()
         // Register a setup system to run once at the beginning of the app
         .add_systems(Startup, setup)
+        // trigger attacks on armor
+        .add_systems(
+            Update,
+            attack_armor.run_if(on_timer(Duration::from_millis(1000))),
+        )
         .run();
 }
 
@@ -96,4 +106,15 @@ fn take_damage(
     }
 
     info!("(propagation reached root)\n");
+}
+
+// System that triggers random attacks on one piece of armor every 200ms
+fn attack_armor(entities: Query<Entity, With<Armor>>, mut commands: Commands) {
+    let mut rng = rng();
+
+    if let Some(target) = entities.iter().choose(&mut rng) {
+        let damage = rng.random_range(1..20);
+        commands.trigger_targets(Attack { damage }, target);
+        info!("⚔️  Attack for {} damage", damage);
+    }
 }
