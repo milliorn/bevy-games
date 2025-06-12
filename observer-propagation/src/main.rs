@@ -50,7 +50,7 @@ fn main() {
 // We spawn a Goblin with a Name and attach a Helmet, Shirt, Socks as its child/ren.
 fn setup(mut commands: Commands) {
     commands
-        .spawn(Name::new("Goblin")) // Parent entity
+        .spawn((Name::new("Goblin"), HitPoints(50))) // Parent entity
         .observe(take_damage)
         .with_children(|parent| {
             // Child entities
