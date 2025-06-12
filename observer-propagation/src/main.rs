@@ -42,6 +42,7 @@ fn main() {
             Update,
             attack_armor.run_if(on_timer(Duration::from_millis(1000))),
         )
+        .add_observer(attack_hits)
         .run();
 }
 
@@ -108,13 +109,21 @@ fn take_damage(
     info!("(propagation reached root)\n");
 }
 
-// System that triggers random attacks on one piece of armor every 200ms
+// System that triggers random attacks on one piece of armor
 fn attack_armor(entities: Query<Entity, With<Armor>>, mut commands: Commands) {
     let mut rng = rng();
 
     if let Some(target) = entities.iter().choose(&mut rng) {
         let damage = rng.random_range(1..20);
+
         commands.trigger_targets(Attack { damage }, target);
+
         info!("⚔️  Attack for {} damage", damage);
+    }
+}
+
+fn attack_hits(trigger: Trigger<Attack>, name: Query<&Name>) {
+    if let Ok(name) = name.get(trigger.target()) {
+        info!("Attack hit {}", name);
     }
 }
