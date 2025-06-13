@@ -12,6 +12,10 @@ struct Acceleration(Vec3);
 #[derive(Component, Default)]
 struct LastPos(Vec3);
 
+// marks an entity as the central star
+#[derive(Component)]
+struct Star;
+
 // entry point
 fn main() {
     // start a minimal bevy ecs app
