@@ -4,6 +4,8 @@ use bevy::prelude::*;
 #[derive(Component, Default)]
 struct Mass(f32);
 
+// entry point
 fn main() {
-    println!("Hello, world!");
+    // start a minimal bevy ecs app
+    App::new().run();
 }
