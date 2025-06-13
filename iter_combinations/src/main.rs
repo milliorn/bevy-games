@@ -4,6 +4,10 @@ use bevy::prelude::*;
 #[derive(Component, Default)]
 struct Mass(f32);
 
+// stores the current acceleration of an entity
+#[derive(Component, Default)]
+struct Acceleration(Vec3);
+
 // entry point
 fn main() {
     // start a minimal bevy ecs app
