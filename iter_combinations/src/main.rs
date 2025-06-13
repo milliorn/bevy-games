@@ -8,6 +8,10 @@ struct Mass(f32);
 #[derive(Component, Default)]
 struct Acceleration(Vec3);
 
+// stores the last position of an entity for physics calculations.
+#[derive(Component, Default)]
+struct LastPos(Vec3);
+
 // entry point
 fn main() {
     // start a minimal bevy ecs app
