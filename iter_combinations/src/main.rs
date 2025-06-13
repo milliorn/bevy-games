@@ -1,5 +1,11 @@
 use bevy::prelude::*;
 
+// Gravitational constant for the simulation's physics.
+const GRAVITY_CONSTANT: f32 = 0.001;
+
+// Number of bodies (planets) to simulate.
+const NUM_BODIES: usize = 100;
+
 // stores the mass of an entity in the simulation
 #[derive(Component, Default)]
 struct Mass(f32);
