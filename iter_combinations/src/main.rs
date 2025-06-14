@@ -52,4 +52,9 @@ fn generate_bodies(
 ) {
     // Create a reusable sphere mesh for bodies.
     let mesh = meshes.add(Sphere::new(1.0).mesh().ico(3).unwrap());
+
+    // Range for randomizing body color (between 0.5 and 1.0 for each channel).
+    let color_range = 0.5..1.0;
+    // Range for randomizing initial velocity (-0.5 to 0.5).
+    let vel_range = -0.5..0.5;
 }
