@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use rand_chacha::rand_core::SeedableRng;
 
 // Gravitational constant for the simulation's physics.
 const GRAVITY_CONSTANT: f32 = 0.001;
@@ -57,4 +58,7 @@ fn generate_bodies(
     let color_range = 0.5..1.0;
     // Range for randomizing initial velocity (-0.5 to 0.5).
     let vel_range = -0.5..0.5;
+
+    // Seed the random number generator to make the simulation deterministic.
+    let mut rng = rand_chacha::ChaCha8Rng::seed_from_u64(19878367467713);
 }
