@@ -38,3 +38,9 @@ fn main() {
     // start a minimal bevy ecs app
     App::new().run();
 }
+
+/// System: Spawns all entities and sets up the simulation.
+/// Will be run at startup.
+fn generate_bodies() {
+    todo!()
+}
