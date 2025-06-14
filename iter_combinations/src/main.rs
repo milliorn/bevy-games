@@ -68,13 +68,17 @@ fn generate_bodies(
         // Randomized radius for this body.
         let radius: f32 = rng.random_range(0.1..0.7);
 
-        // Calculated mass based on radius.
-        let mass_value = todo!();
-
-        // Randomized initial position in 3D space.
-        let position = todo!();
-
         // Calculate the mass of the body based on its radius.
         let mass_value = radius.powi(3) * 10.;
+
+        // Randomize the initial position in 3D space.
+        let position = Vec3::new(
+            rng.random_range(-1.0..1.0),
+            rng.random_range(-1.0..1.0),
+            rng.random_range(-1.0..1.0),
+        )
+        .normalize()
+            * rng.random_range(0.2f32..1.0).cbrt()
+            * 15.;
     }
 }
