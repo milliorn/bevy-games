@@ -35,8 +35,7 @@ struct BodyBundle {
 
 // entry point
 fn main() {
-    // start a minimal bevy ecs app
-    App::new().run();
+    App::new().add_systems(Startup, generate_bodies).run();
 }
 
 /// System: Spawns all entities and sets up the simulation.
