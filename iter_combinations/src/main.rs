@@ -66,14 +66,15 @@ fn generate_bodies(
     // Spawn multiple bodies (planets) with randomized properties.
     for _ in 0..NUM_BODIES {
         // Randomized radius for this body.
-        let radius: f32 = rng.gen_range(0.1..0.7);
+        let radius: f32 = rng.random_range(0.1..0.7);
 
         // Calculated mass based on radius.
-        let mass_value; // (To be set)
+        let mass_value = todo!();
 
         // Randomized initial position in 3D space.
-        let position; // (To be set)
+        let position = todo!();
 
-        // Randomize the radius of the body.
+        // Calculate the mass of the body based on its radius.
+        let mass_value = radius.powi(3) * 10.;
     }
 }
