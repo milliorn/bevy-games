@@ -1,5 +1,6 @@
 use bevy::prelude::*;
-use rand_chacha::rand_core::SeedableRng;
+use rand::{Rng, SeedableRng};
+use rand_chacha::ChaCha8Rng;
 
 // Gravitational constant for the simulation's physics.
 const GRAVITY_CONSTANT: f32 = 0.001;
@@ -64,6 +65,15 @@ fn generate_bodies(
 
     // Spawn multiple bodies (planets) with randomized properties.
     for _ in 0..NUM_BODIES {
-        todo!()
+        // Randomized radius for this body.
+        let radius: f32 = rng.gen_range(0.1..0.7);
+
+        // Calculated mass based on radius.
+        let mass_value; // (To be set)
+
+        // Randomized initial position in 3D space.
+        let position; // (To be set)
+
+        // Randomize the radius of the body.
     }
 }
