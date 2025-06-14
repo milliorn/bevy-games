@@ -61,4 +61,9 @@ fn generate_bodies(
 
     // Seed the random number generator to make the simulation deterministic.
     let mut rng = rand_chacha::ChaCha8Rng::seed_from_u64(19878367467713);
+
+    // Spawn multiple bodies (planets) with randomized properties.
+    for _ in 0..NUM_BODIES {
+        todo!()
+    }
 }
