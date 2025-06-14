@@ -1,6 +1,5 @@
-use bevy::prelude::*;
+use bevy::{math::FloatPow, prelude::*};
 use rand::{Rng, SeedableRng};
-use rand_chacha::ChaCha8Rng;
 
 // Gravitational constant for the simulation's physics.
 const GRAVITY_CONSTANT: f32 = 0.001;
@@ -69,7 +68,7 @@ fn generate_bodies(
         let radius: f32 = rng.random_range(0.1..0.7);
 
         // Calculate the mass of the body based on its radius.
-        let mass_value = radius.powi(3) * 10.;
+        let mass_value = FloatPow::cubed(radius) * 10.;
 
         // Randomize the initial position in 3D space.
         let position = Vec3::new(
@@ -78,7 +77,41 @@ fn generate_bodies(
             rng.random_range(-1.0..1.0),
         )
         .normalize()
-            * rng.random_range(0.2f32..1.0).cbrt()
+            * ops::cbrt(rng.random_range(0.2f32..1.0))
             * 15.;
+
+        // spawn a new entity representing a body in the simulation
+        commands.spawn((
+            // group all components for a body
+            BodyBundle {
+                // 3d shape of the body (sphere)
+                mesh: Mesh3d(mesh.clone()),
+                // random color material for appearance
+                material: MeshMaterial3d(materials.add(Color::srgb(
+                    rng.random_range(color_range.clone()), // red
+                    rng.random_range(color_range.clone()), // green
+                    rng.random_range(color_range.clone()), // blue
+                ))),
+                // physical mass calculated from radius
+                mass: Mass(mass_value),
+                // initial acceleration
+                acceleration: Acceleration(Vec3::ZERO),
+                // previous position for verlet integration
+                last_pos: LastPos(
+                    position
+                        - Vec3::new(
+                            rng.random_range(vel_range.clone()), // velocity x
+                            rng.random_range(vel_range.clone()), // velocity y
+                            rng.random_range(vel_range.clone()), // velocity z
+                        ) * time.timestep().as_secs_f32(),
+                ),
+            },
+            // position and scale in 3d space
+            Transform {
+                translation: position,
+                scale: Vec3::splat(radius),
+                ..default()
+            },
+        ));
     }
 }
