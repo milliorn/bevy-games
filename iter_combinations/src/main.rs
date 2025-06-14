@@ -40,6 +40,15 @@ fn main() {
 
 /// System: Spawns all entities and sets up the simulation.
 /// Will be run at startup.
-fn generate_bodies() {
+fn generate_bodies(
+    // Gives the current time, including timestep size.
+    time: Res<Time<Fixed>>,
+    // Used to spawn entities into the world.
+    mut commands: Commands,
+    // Used to store and reuse 3D meshes.
+    mut meshes: ResMut<Assets<Mesh>>,
+    // Used to store and reuse materials (appearance).
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
     todo!()
 }
