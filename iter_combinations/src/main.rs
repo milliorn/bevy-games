@@ -50,5 +50,6 @@ fn generate_bodies(
     // Used to store and reuse materials (appearance).
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    todo!()
+    // Create a reusable sphere mesh for bodies.
+    let mesh = meshes.add(Sphere::new(1.0).mesh().ico(3).unwrap());
 }
