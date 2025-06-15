@@ -142,4 +142,10 @@ fn generate_bodies(
             radius: star_radius,
             ..default()
         });
+
+    // spawn camera entity to view the simulation
+    commands.spawn((
+        Camera3d::default(),
+        Transform::from_xyz(0.0, 10.5, -30.0).looking_at(Vec3::ZERO, Vec3::Y),
+    ));
 }
