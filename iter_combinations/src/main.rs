@@ -1,4 +1,4 @@
-use bevy::{math::FloatPow, prelude::*};
+use bevy::{color::palettes::css::ORANGE_RED, math::FloatPow, prelude::*};
 use rand::{Rng, SeedableRng};
 
 // Gravitational constant for the simulation's physics.
@@ -114,4 +114,32 @@ fn generate_bodies(
             },
         ));
     }
+
+    // add bigger "star" body in the center
+    let star_radius = 1.;
+    commands
+        .spawn((
+            // group all components for the star
+            BodyBundle {
+                mesh: Mesh3d(meshes.add(Sphere::new(1.0).mesh().ico(5).unwrap())),
+                material: MeshMaterial3d(materials.add(StandardMaterial {
+                    base_color: ORANGE_RED.into(),
+                    emissive: LinearRgba::from(ORANGE_RED) * 2.,
+                    ..default()
+                })),
+
+                mass: Mass(500.0),
+                ..default()
+            },
+            // star's scale (size)
+            Transform::from_scale(Vec3::splat(star_radius)),
+            Star,
+        ))
+        // add a child PointLight to make the star glow
+        .with_child(PointLight {
+            color: Color::WHITE,
+            range: 100.0,
+            radius: star_radius,
+            ..default()
+        });
 }
