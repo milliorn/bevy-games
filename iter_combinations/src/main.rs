@@ -117,6 +117,7 @@ fn generate_bodies(
 
     // add bigger "star" body in the center
     let star_radius = 1.;
+
     commands
         .spawn((
             // group all components for the star
@@ -148,4 +149,25 @@ fn generate_bodies(
         Camera3d::default(),
         Transform::from_xyz(0.0, 10.5, -30.0).looking_at(Vec3::ZERO, Vec3::Y),
     ));
+}
+
+/// System: Applies gravitational interaction between bodies.
+/// Runs on FixedUpdate schedule.
+fn interact_bodies(mut query: Query<(&Mass, &GlobalTransform, &mut Acceleration)>) {
+    todo!()
+}
+
+/// System: Updates positions of all bodies using Verlet integration.
+/// Runs on FixedUpdate schedule.
+fn integrate(time: Res<Time>, mut query: Query<(&mut Acceleration, &mut Transform, &mut LastPos)>) {
+    todo!()
+}
+
+/// System: Rotates the camera to look at the central star.
+/// Runs on Update schedule.
+fn look_at_star(
+    mut camera: Query<&mut Transform, (With<Camera>, Without<Star>)>,
+    star: Query<&Transform, With<Star>>,
+) {
+    todo!()
 }
