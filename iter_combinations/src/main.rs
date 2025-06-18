@@ -36,7 +36,13 @@ struct BodyBundle {
 
 // entry point
 fn main() {
-    App::new().add_systems(Startup, generate_bodies).run();
+    App::new()
+        .add_plugins(DefaultPlugins)
+        .insert_resource(ClearColor(Color::BLACK))
+        .add_systems(Startup, generate_bodies)
+        .add_systems(FixedUpdate, (interact_bodies, integrate))
+        .add_systems(Update, look_at_star)
+        .run();
 }
 
 /// System: Spawns all entities and sets up the simulation.
@@ -152,19 +158,16 @@ fn generate_bodies(
 }
 
 /// System: Applies gravitational interaction between bodies.
-/// Runs on FixedUpdate schedule.
 fn interact_bodies(mut query: Query<(&Mass, &GlobalTransform, &mut Acceleration)>) {
     todo!()
 }
 
 /// System: Updates positions of all bodies using Verlet integration.
-/// Runs on FixedUpdate schedule.
 fn integrate(time: Res<Time>, mut query: Query<(&mut Acceleration, &mut Transform, &mut LastPos)>) {
     todo!()
 }
 
 /// System: Rotates the camera to look at the central star.
-/// Runs on Update schedule.
 fn look_at_star(
     mut camera: Query<&mut Transform, (With<Camera>, Without<Star>)>,
     star: Query<&Transform, With<Star>>,
