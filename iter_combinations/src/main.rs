@@ -193,7 +193,14 @@ fn integrate(time: Res<Time>, mut query: Query<(&mut Acceleration, &mut Transfor
 
     // Update each body's position using Verlet integration.
     for (mut acceleration, mut transform, mut last_pos) in &mut query {
-        todo!()
+        // Compute the new position using Verlet integration.
+        let new_pos = transform.translation * 2.0 - last_pos.0 + acceleration.0 * dt_sq;
+        // Reset acceleration for the next frame.
+        acceleration.0 = Vec3::ZERO;
+        // Store the current position as last position for next update.
+        last_pos.0 = transform.translation;
+        // Update the body's position to the new calculated position.
+        transform.translation = new_pos;
     }
 }
 
