@@ -170,7 +170,12 @@ fn interact_bodies(mut query: Query<(&Mass, &GlobalTransform, &mut Acceleration)
         ],
     ) = iter.fetch_next()
     {
-        // To be filled in: gravitational force calculation and acceleration update.
+        // Vector difference between the two bodies' positions.
+        let delta = transform2.translation() - transform1.translation();
+        // Squared distance between the two bodies.
+        let distance_sq: f32 = delta.length_squared();
+        // Calculate gravity force scaling factor (inverse-square law).
+        let f = GRAVITY_CONSTANT / distance_sq;
     }
 }
 
