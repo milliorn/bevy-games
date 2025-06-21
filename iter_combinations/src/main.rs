@@ -209,5 +209,18 @@ fn look_at_star(
     mut camera: Query<&mut Transform, (With<Camera>, Without<Star>)>,
     star: Query<&Transform, With<Star>>,
 ) {
-    todo!()
+    // Get the star's position (unwrap Result to get Transform).
+    let star_transform = star.single().unwrap();
+    // Get the camera's transform (mutable, unwrap Result).
+    let mut camera_transform = camera.single_mut().unwrap();
+
+    // Calculate the rotation needed to look at the star.
+    let new_rotation = camera_transform
+        .looking_at(star_transform.translation, Vec3::Y)
+        .rotation
+        // Smoothly interpolate between the current and target rotation.
+        .lerp(camera_transform.rotation, 0.1);
+
+    // Apply the new rotation to the camera.
+    camera_transform.rotation = new_rotation;
 }
