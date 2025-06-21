@@ -4,21 +4,26 @@ use bevy::prelude::*; // Import Bevy's core functionality
 #[derive(Resource, Default)]
 struct SpatialIndex;
 
-// Define a system that runs once at startup
+// Define a system that runs once when the app starts
 fn setup() {
-    todo!()
+    todo!() // Placeholder for the setup logic
 }
 
-// Define a system that runs every frame during the app's update stage
+// Define a system that will eventually draw mines on the screen
 fn draw_shapes() {
-    todo!()
+    todo!() // Will be responsible for rendering visuals
+}
+
+// Define a system that will handle user input (e.g. mouse clicks)
+fn handle_click() {
+    todo!() // Will detect and respond to input events
 }
 
 fn main() {
     App::new() // Create a new Bevy application
         .add_plugins(DefaultPlugins) // Add Bevy’s default plugins (windowing, input, rendering, etc.)
         .init_resource::<SpatialIndex>() // Initialize the SpatialIndex resource and insert it at startup
-        .add_systems(Startup, setup) // Register the setup system to run during app startup
-        .add_systems(Update, draw_shapes) // Register draw_shapes to run every frame during update
-        .run(); // Start the app's main loop
+        .add_systems(Startup, setup) // Run the setup system once during startup
+        .add_systems(Update, (draw_shapes, handle_click)) // Run both update systems every frame
+        .run(); // Start the main app loop
 }
