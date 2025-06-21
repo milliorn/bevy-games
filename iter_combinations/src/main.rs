@@ -188,7 +188,13 @@ fn interact_bodies(mut query: Query<(&Mass, &GlobalTransform, &mut Acceleration)
 
 /// System: Updates positions of all bodies using Verlet integration.
 fn integrate(time: Res<Time>, mut query: Query<(&mut Acceleration, &mut Transform, &mut LastPos)>) {
-    todo!()
+    // Calculate delta time squared for Verlet integration.
+    let dt_sq = time.delta_secs() * time.delta_secs();
+
+    // Update each body's position using Verlet integration.
+    for (mut acceleration, mut transform, mut last_pos) in &mut query {
+        todo!()
+    }
 }
 
 /// System: Rotates the camera to look at the central star.
