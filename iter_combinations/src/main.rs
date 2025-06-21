@@ -37,11 +37,11 @@ struct BodyBundle {
 // entry point
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
-        .insert_resource(ClearColor(Color::BLACK))
-        .add_systems(Startup, generate_bodies)
-        .add_systems(FixedUpdate, (interact_bodies, integrate))
-        .add_systems(Update, look_at_star)
+        .add_plugins(DefaultPlugins) // Adds all Bevy's standard plugins (rendering, window, etc.)
+        .insert_resource(ClearColor(Color::BLACK)) // Set the background color to black.
+        .add_systems(Startup, generate_bodies) // Run generate_bodies system at startup to spawn entities.
+        .add_systems(FixedUpdate, (interact_bodies, integrate)) // Run physics systems at fixed intervals.
+        .add_systems(Update, look_at_star) // Update the camera orientation every frame.
         .run();
 }
 
@@ -159,7 +159,19 @@ fn generate_bodies(
 
 /// System: Applies gravitational interaction between bodies.
 fn interact_bodies(mut query: Query<(&Mass, &GlobalTransform, &mut Acceleration)>) {
-    todo!()
+    // Create an iterator over all unique pairs of bodies (mutable access).
+    let mut iter = query.iter_combinations_mut();
+    // Loop over each unique body pair.
+    // The body interaction logic will go inside this loop.
+    while let Some(
+        [
+            (Mass(m1), transform1, mut acc1),
+            (Mass(m2), transform2, mut acc2),
+        ],
+    ) = iter.fetch_next()
+    {
+        // To be filled in: gravitational force calculation and acceleration update.
+    }
 }
 
 /// System: Updates positions of all bodies using Verlet integration.
