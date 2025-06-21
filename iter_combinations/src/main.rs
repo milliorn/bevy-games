@@ -176,6 +176,13 @@ fn interact_bodies(mut query: Query<(&Mass, &GlobalTransform, &mut Acceleration)
         let distance_sq: f32 = delta.length_squared();
         // Calculate gravity force scaling factor (inverse-square law).
         let f = GRAVITY_CONSTANT / distance_sq;
+
+        // The force applied per unit mass (direction and scaled magnitude).
+        let force_unit_mass = delta * f;
+        // Update acceleration of the first body (Newton's law).
+        acc1.0 += force_unit_mass * *m2;
+        // Update acceleration of the second body (equal and opposite reaction).
+        acc2.0 -= force_unit_mass * *m1;
     }
 }
 
