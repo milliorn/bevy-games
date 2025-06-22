@@ -11,17 +11,20 @@ struct ExplodeMines {
     radius: f32, // How far the explosion reaches
 }
 
-// Define a system that runs once when the app starts
+// Define an observer that reacts when ExplodeMines is triggered
+fn observe_explode_mines(_trigger: Trigger<ExplodeMines>) {
+    // This will later check for nearby mines and trigger explosions
+    todo!()
+}
+
 fn setup() {
     todo!()
 }
 
-// Define a system that will eventually draw mines on the screen
 fn draw_shapes() {
     todo!()
 }
 
-// Define a system that will handle user input (e.g. mouse clicks)
 fn handle_click() {
     todo!()
 }
@@ -31,6 +34,7 @@ fn main() {
         .add_plugins(DefaultPlugins) // Add Bevy’s default plugins (windowing, input, rendering, etc.)
         .init_resource::<SpatialIndex>() // Initialize the SpatialIndex resource and insert it at startup
         .add_event::<ExplodeMines>() // Register the custom event type with the app
+        .add_observer(observe_explode_mines) // Run this observer when ExplodeMines is triggered
         .add_systems(Startup, setup) // Run the setup system once during startup
         .add_systems(Update, (draw_shapes, handle_click)) // Run both update systems every frame
         .run(); // Start the main app loop
