@@ -4,6 +4,13 @@ use bevy::prelude::*; // Import Bevy's core functionality
 #[derive(Resource, Default)]
 struct SpatialIndex;
 
+// Define a component that marks an entity as a mine
+#[derive(Component)]
+struct Mine {
+    pos: Vec2, // Position of the mine in 2D space
+    size: f32, // Radius of the mine's effect
+}
+
 // Define a custom event that will trigger explosions in a radius
 #[derive(Event)]
 struct ExplodeMines {
