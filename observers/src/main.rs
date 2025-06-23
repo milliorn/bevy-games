@@ -1,10 +1,40 @@
-use bevy::prelude::*; // Import Bevy's core functionality
+use bevy::{
+    platform::collections::{HashMap, HashSet},
+    prelude::*,
+}; // Import Bevy's core functionality
 use rand::{Rng, SeedableRng}; // Import traits for random number generation
 use rand_chacha::ChaCha8Rng; // Import the ChaCha8 random number generator
 
+/// Cell size has to be bigger than any `ExplodeMines::radius`
+const CELL_SIZE: f32 = 64.0;
+
 // Define a custom resource used for storing spatial data (will be expanded later)
 #[derive(Resource, Default)]
-struct SpatialIndex;
+struct SpatialIndex {
+    map: HashMap<(i32, i32), HashSet<Entity>>,
+}
+
+impl SpatialIndex {
+    // Lookup all entities within adjacent cells of our spatial index
+    fn get_nearby(&self, pos: Vec2) -> Vec<Entity> {
+        let tile = (
+            (pos.x / CELL_SIZE).floor() as i32,
+            (pos.y / CELL_SIZE).floor() as i32,
+        );
+
+        let mut nearby = Vec::new();
+
+        for x in -1..=1 {
+            for y in -1..=1 {
+                if let Some(mines) = self.map.get(&(tile.0 + x, tile.1 + y)) {
+                    nearby.extend(mines.iter());
+                }
+            }
+        }
+
+        nearby
+    }
+}
 
 #[derive(Event)]
 struct Explode;
@@ -35,9 +65,27 @@ impl Mine {
     }
 }
 
-fn observe_explode_mines(_trigger: Trigger<ExplodeMines>) {
-    // Will react to ExplodeMines events
-    todo!()
+// Will react to ExplodeMines events
+fn observe_explode_mines(
+    trigger: Trigger<ExplodeMines>,
+    mines: Query<&Mine>,
+    index: Res<SpatialIndex>,
+    mut commands: Commands,
+) {
+    // Access the explosion event data
+    let event = trigger.event();
+
+    // Loop through nearby entities from the spatial index
+    for e in index.get_nearby(event.pos) {
+        // Check if the entity is a mine
+        let mine = mines.get(e).unwrap();
+
+        // Check distance between mine and explosion center
+        if mine.pos.distance(event.pos) < mine.size + event.radius {
+            // Trigger an Explode event on this mine
+            commands.trigger_targets(Explode, e);
+        }
+    }
 }
 
 fn explode_mine(trigger: Trigger<Explode>, query: Query<&Mine>, mut commands: Commands) {
