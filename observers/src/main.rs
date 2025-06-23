@@ -6,6 +6,9 @@ use rand_chacha::ChaCha8Rng; // Import the ChaCha8 random number generator
 #[derive(Resource, Default)]
 struct SpatialIndex;
 
+#[derive(Event)]
+struct Explode;
+
 // Define a custom event that will trigger explosions in a radius
 #[derive(Event)]
 struct ExplodeMines {
@@ -37,6 +40,10 @@ fn observe_explode_mines(_trigger: Trigger<ExplodeMines>) {
     todo!()
 }
 
+fn explode_mine(_trigger: Trigger<Explode>) {
+    todo!();
+}
+
 fn setup(mut commands: Commands) {
     // Spawn a 2D camera so we can see the scene
     commands.spawn(Camera2d);
@@ -54,6 +61,31 @@ fn setup(mut commands: Commands) {
             ..default()
         },
     ));
+
+    let mut rng = ChaCha8Rng::seed_from_u64(19878367467713);
+
+    commands
+        .spawn(Mine::random(&mut rng))
+        // Observers can watch for events targeting a specific entity.
+        // This will create a new observer that runs whenever the Explode event
+        // is triggered for this spawned entity.
+        .observe(explode_mine);
+
+    // We want to spawn a bunch of mines. We could just call the code above for each of them.
+    // That would create a new observer instance for every Mine entity. Having duplicate observers
+    // generally isn't worth worrying about as the overhead is low. But if you want to be maximally efficient,
+    // you can reuse observers across entities.
+    //
+    // First, observers are actually just entities with the Observer component! The `observe()` functions
+    // you've seen so far in this example are just shorthand for manually spawning an observer.
+    let mut observer = Observer::new(explode_mine);
+
+    for _ in 0..1000 {
+        let entity = commands.spawn(Mine::random(&mut rng)).id();
+        observer.watch_entity(entity);
+    }
+
+    commands.spawn(observer);
 }
 
 fn draw_shapes() {
