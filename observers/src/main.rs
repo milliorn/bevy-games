@@ -37,8 +37,23 @@ fn observe_explode_mines(_trigger: Trigger<ExplodeMines>) {
     todo!()
 }
 
-fn setup() {
-    todo!()
+fn setup(mut commands: Commands) {
+    // Spawn a 2D camera so we can see the scene
+    commands.spawn(Camera2d);
+
+    // Spawn on-screen instructions using a Text node positioned in the top-left corner
+    commands.spawn((
+        Text::new(
+            "Click on a \"Mine\" to trigger it.\n\
+            When it explodes it will trigger all overlapping mines.",
+        ),
+        Node {
+            position_type: PositionType::Absolute,
+            top: Val::Px(12.),
+            left: Val::Px(12.),
+            ..default()
+        },
+    ));
 }
 
 fn draw_shapes() {
