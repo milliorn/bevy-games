@@ -1,4 +1,6 @@
 use bevy::prelude::*; // Import Bevy's core functionality
+use rand::{Rng, SeedableRng}; // Import traits for random number generation
+use rand_chacha::ChaCha8Rng; // Import the ChaCha8 random number generator
 
 // Define a custom resource used for storing spatial data (will be expanded later)
 #[derive(Resource, Default)]
@@ -19,9 +21,14 @@ struct Mine {
 }
 
 impl Mine {
-    // Create a randomly positioned and sized mine (we’ll implement this soon)
-    fn random() -> Self {
-        todo!()
+    fn random(rand: &mut ChaCha8Rng) -> Self {
+        Mine {
+            pos: Vec2::new(
+                (rand.random::<f32>() - 0.5) * 1200.0,
+                (rand.random::<f32>() - 0.5) * 600.0,
+            ),
+            size: 4.0 + rand.random::<f32>() * 16.0,
+        }
     }
 }
 
