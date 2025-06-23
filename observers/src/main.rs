@@ -40,8 +40,29 @@ fn observe_explode_mines(_trigger: Trigger<ExplodeMines>) {
     todo!()
 }
 
-fn explode_mine(_trigger: Trigger<Explode>) {
-    todo!();
+fn explode_mine(trigger: Trigger<Explode>, query: Query<&Mine>, mut commands: Commands) {
+    // If a triggered event is targeting a specific entity you can access it with `.target()`
+    let id = trigger.target();
+
+    // If the entity exists, get a handle to it
+    let Ok(mut entity) = commands.get_entity(id) else {
+        return;
+    };
+
+    // Print a message to the console for debugging
+    info!("Boom! {} exploded.", id.index());
+
+    // Despawn the mine entity
+    entity.despawn();
+
+    // Read the mine's position and size from the query
+    let mine = query.get(id).unwrap();
+
+    // Trigger another explosion cascade using that position and size
+    commands.trigger(ExplodeMines {
+        pos: mine.pos,
+        radius: mine.size,
+    });
 }
 
 fn setup(mut commands: Commands) {
